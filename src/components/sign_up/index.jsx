@@ -1,5 +1,6 @@
     import { useForm } from "react-hook-form";
     import { v4 as uuidv4 } from 'uuid';
+    import axios from "axios";
     import {
         Center,
         FormControl,
@@ -8,12 +9,17 @@
         Button,
         Text,
         Container,
-        ButtonGroup
+        ButtonGroup,
+        Grid,
+        GridItem,
+        useToast
     } from "@chakra-ui/react";
 import { useState } from "react";
 
-export const From = () => {
-    const [newUser, setNewUser] = useState({})
+import { Link } from "react-router-dom";
+
+export const Form = () => {
+    const [newUser, setNewUser] = useState({});
     const { register,
             handleSubmit, 
             watch, 
@@ -23,36 +29,74 @@ export const From = () => {
                 mode: "onBlur" // focusi depqum
             });
 
-    const onSubmit = data => {
+const toast = useToast();
+const successToast =()=>{
+   return toast({
+        title: 'Account created.',
+        description: "We've created your account for you.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+};
+const errorToast =()=>{
+    return toast({
+         title: 'Sorry.',
+         description: "This email already exists",
+         status: 'error',
+         duration: 9000,
+         isClosable: true,
+       });
+ };
+const onSignUp = async (data) => {
         setNewUser({
             id: uuidv4(),
             ...data
         });
-        console.log(newUser); 
 
-        reset();
+await axios.post("http://localhost:3001/sign_up", 
+        {
+            id: uuidv4(),
+            ...data
+        })
+        .then(function (response) {
+            console.log(response);
+            console.log('Sign up successful!');
+            successToast();
+            reset();
+          })
+        .catch(function (error) {
+            console.log('Email already exists ');
+            errorToast();
+        });
+        
     };
-
-    //   console.log(watch("example")); 
 
     return (
         <Container  maxW="2xl" centerContent>
-            <Text fontSize='6xl'>SIGN UP</Text>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <Text fontSize='6xl' mb="10">SIGN UP</Text>
+            <form onSubmit={handleSubmit(onSignUp)}>
             <FormControl>
-                <FormLabel >First Name</FormLabel>
-                <Input p={7} {...register("firstName", 
-                { 
-                    required: "First name is required",
-                    minLength: {
-                        value: 2,
-                        message: "Name is not valid"
-                    }
-                })} /><br></br>
-                <Text color="tomato">{ errors?.firstName && errors?.firstName?.message}</Text><br></br>
-
+            <Grid w="360px" templateColumns='repeat(2, 1fr)' gap={6}>
+                <GridItem>
+                    <FormLabel >First Name</FormLabel>
+                    <Input  w="200px"  placeholder="First Name"
+                            p={7} 
+                            {...register("firstName", 
+                    { 
+                        required: "First name is required",
+                        minLength: {
+                            value: 2,
+                            message: "Name is not valid"
+                        }
+                    })} />
+                    <Text color="tomato">{ errors?.firstName && errors?.firstName?.message}</Text>
+                </GridItem>
+                <GridItem w="100%"> 
                 <FormLabel >Last Name</FormLabel>
-                <Input p={7} {...register("lastName", 
+                <Input w="200px" placeholder="Last Name"
+                        p={7} 
+                        {...register("lastName", 
                 
                 { 
                     required: "Last name is required",
@@ -60,12 +104,16 @@ export const From = () => {
                         value: 3,
                         message: "Last Name is not valid"
                     }
-                })} /><br></br>
+                })} />
+                <Text color="tomato">{ errors?.lastName && errors?.lastName?.message}</Text>
+                </GridItem>
                 
-                <Text color="tomato">{ errors?.lastName && errors?.lastName?.message}</Text><br></br>
-
-                <FormLabel >email</FormLabel>
-                <Input p={7} {...register("email", 
+                </Grid>
+                <FormLabel >Email</FormLabel>
+                <Input placeholder="Email"
+                        w="100%" 
+                        p={7} 
+                        {...register("email", 
                 {   
                     required: "Email is required",
                     pattern: {
@@ -77,19 +125,21 @@ export const From = () => {
                 <Text color="tomato">{ errors?.email && errors?.email?.message}</Text><br></br>
 
                 <FormLabel >Age</FormLabel>
-                <Input type="number" p={7} {...register("age", 
+                <Input placeholder="Confirm Password"
+                        w="100%" 
+                        type="number" 
+                        p={7} {...register("age", 
                 {   
                     required: "Age is required",
                 })} /><br></br>       
                 <Text color="tomato">{ errors?.age && errors?.age?.message}</Text><br></br> 
 
-                {/* <FormLabel>Select Gender<br></br>
-                    <Radio  name="gender" type="radio" value="male"/>Male
-                    <Radio  name="gender" type="radio" value="female"/> Female
-                </FormLabel>   */}
 
                 <FormLabel >Password</FormLabel>
-                <Input p={8} {...register("password", 
+                <Input placeholder="Password"
+                        w="100%" 
+                        p={8} 
+                        {...register("password", 
                 {   
                     required: "Password is required",
                     minLength:{
@@ -100,7 +150,10 @@ export const From = () => {
                 <Text color="tomato">{ errors?.password && errors?.password?.message}</Text><br></br> 
 
                 <FormLabel >Confirm Password</FormLabel>
-                <Input p={8} type="password" {
+                <Input placeholder="Confirm Password" 
+                        w="100%" 
+                        p={8} 
+                        type="password" {
                     ...register('confirmPassword',
                  { 
                     required: "password is required",
@@ -110,8 +163,8 @@ export const From = () => {
                
                     <Center> 
                     <ButtonGroup>
-                        <Button px={20} py={10} >Login</Button>
-                        <Button px={20} py={10} type="submit">SIGN UP</Button>
+                        <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} ><Link to="/sign_in">LOGIN</Link></Button>
+                        <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} type="submit">SIGN UP</Button>
                     </ButtonGroup>
                     </Center>
 
