@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, Link} from "react-router-dom";
-import { extendTheme } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/react';
 import {
     Center,
     FormControl,
@@ -12,7 +12,6 @@ import {
     ButtonGroup,
     useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import axios from "axios";
 
 export const Login = () => {
@@ -59,8 +58,8 @@ export const Login = () => {
                 errorToast();
             });
         };
+        
     return (
-
     <Container  maxW="2xl" centerContent>
         <Text fontSize='6xl'>SIGN IN</Text>
         <form onSubmit={handleSubmit(signIn)}>
