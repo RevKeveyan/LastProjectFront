@@ -1,5 +1,5 @@
     import { useForm } from "react-hook-form";
-    import { v4 as uuidv4 } from 'uuid';
+    import { useNavigate } from "react-router-dom";
     import axios from "axios";
     import {
         Center,
@@ -14,12 +14,9 @@
         GridItem,
         useToast
     } from "@chakra-ui/react";
-import { useState } from "react";
-
 import { Link } from "react-router-dom";
-
 export const Form = () => {
-    const [newUser, setNewUser] = useState({});
+    const nawigate = useNavigate();
     const { register,
             handleSubmit, 
             watch, 
@@ -35,7 +32,7 @@ const successToast =()=>{
         title: 'Account created.',
         description: "We've created your account for you.",
         status: 'success',
-        duration: 9000,
+        duration: 3000,
         isClosable: true,
       });
 };
@@ -44,25 +41,21 @@ const errorToast =()=>{
          title: 'Sorry.',
          description: "This email already exists",
          status: 'error',
-         duration: 9000,
+         duration: 3000,
          isClosable: true,
        });
  };
 const onSignUp = async (data) => {
-        setNewUser({
-            id: uuidv4(),
-            ...data
-        });
 
 await axios.post("http://localhost:3001/sign_up", 
         {
-            id: uuidv4(),
             ...data
         })
         .then(function (response) {
             console.log(response);
             console.log('Sign up successful!');
             successToast();
+            nawigate('/sign_in');
             reset();
           })
         .catch(function (error) {
@@ -125,7 +118,7 @@ await axios.post("http://localhost:3001/sign_up",
                 <Text color="tomato">{ errors?.email && errors?.email?.message}</Text><br></br>
 
                 <FormLabel >Age</FormLabel>
-                <Input placeholder="Confirm Password"
+                <Input placeholder="Age"
                         w="100%" 
                         type="number" 
                         p={7} {...register("age", 

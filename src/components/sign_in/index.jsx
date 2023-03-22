@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, Link} from "react-router-dom";
-import { extendTheme } from '@chakra-ui/react';
 import {
     Center,
     FormControl,
@@ -21,7 +20,7 @@ export const Login = () => {
     return toast({
             title: 'Success.',
             status: 'success',
-            duration: 9000,
+            duration: 3000,
             isClosable: true,
         });
     };
@@ -30,13 +29,10 @@ export const Login = () => {
             title: 'Sorry.',
             description: "Email or password is incorrect",
             status: 'error',
-            duration: 9000,
+            duration: 3000,
             isClosable: true,
         });
     };
-
-
-
     const navigate = useNavigate();
     const { register,
         handleSubmit, 
@@ -47,18 +43,33 @@ export const Login = () => {
 
     const signIn = async (data) => {
     await axios.post("http://localhost:3001/sign_in", data) 
-            .then(function (response) {
-                console.log(response);
+            .then((response) => {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
                 successToast();
                 reset();
-
               })
-            .catch(function (error) {
+              
+            .catch((error) =>{
                 console.log(error);
                 errorToast();
             });
         };
         
+        const getUser = async () => {
+            try {
+              const token = localStorage.getItem('token');
+              const config = {
+                headers: { Authentication: token }
+              };
+              const response = await axios.get('http://localhost:3001/me', config);
+              console.log(response.data);
+              return response.data;
+            } catch (error) {
+              throw error;
+            }
+          };
+       
     return (
     <Container  maxW="2xl" centerContent>
         <Text fontSize='6xl'>SIGN IN</Text>
@@ -88,8 +99,6 @@ export const Login = () => {
                     }
             })} /><br></br>
             <Text color="tomato">{ errors?.password && errors?.password?.message}</Text><br></br> 
-
-            
                 <Center> 
                     <ButtonGroup >
                         <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} type="submit">LOGIN</Button>
