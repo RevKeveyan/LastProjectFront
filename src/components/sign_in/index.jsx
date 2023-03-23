@@ -49,26 +49,25 @@ export const Login = () => {
                 successToast();
                 reset();
               })
-              
             .catch((error) =>{
                 console.log(error);
                 errorToast();
             });
         };
         
-        const getUser = async () => {
-            try {
-              const token = localStorage.getItem('token');
-              const config = {
-                headers: { Authentication: token }
-              };
-              const response = await axios.get('http://localhost:3001/me', config);
-              console.log(response.data);
-              return response.data;
-            } catch (error) {
-              throw error;
-            }
-          };
+        // const getUser = async () => {
+        //     try {
+        //       const token = localStorage.getItem('token');
+        //       const config = {
+        //         headers: { Authentication: token }
+        //       };
+        //       const response = await axios.get('http://localhost:3001/me', config);
+        //       console.log(response.data);
+        //       return response.data;
+        //     } catch (error) {
+        //       throw error;
+        //     }
+        //   };
        
     return (
     <Container  maxW="2xl" centerContent>

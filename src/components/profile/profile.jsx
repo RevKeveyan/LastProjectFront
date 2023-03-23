@@ -24,26 +24,25 @@ import {
 
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../../authContext/AuthContext";
 
 export const Profile = () =>{
-    const {user} = useAuth();
+
+    const {user, updateUser} = useAuth();
     const { register,
         handleSubmit, 
         watch, 
         reset, 
-        setValue,
         formState: { errors },
         } = useForm({
             mode: "onBlur",
             defaultValues:{
                 firstName: user.firstName,
                 lastName: user.lastName,
-                age: +user.age
+                age: user.age
             }
         });
-        console.log(user);
     const toast = useToast();
     const successToast =()=>{
         return toast({
@@ -64,6 +63,25 @@ export const Profile = () =>{
         });
     };
 
+    
+
+  
+
+//   const getUser = async () => {
+//     try {
+//       const token = localStorage.getItem('token');
+//       const config = {
+//         headers: { Authentication: token }
+//       };
+//       const response = await axios.get('http://localhost:3001/me', config);
+//       setUser(response.data);
+//       return response.data;
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
+
+
 
     const userUpdate = async (data) => {
         if(data.firstName !== user.firstName || data.lastName !== user.lastName || +data.age !== user.age){
@@ -71,8 +89,9 @@ export const Profile = () =>{
         const response = await axios.put("http://localhost:3001/update-user", {...data, email:user.email})
           .then((response) => {
             console.log(response);
-            localStorage.setItem('token', response.data);
+            localStorage.setItem('token', response.data.token);
             successToast();
+            updateUser(response.data.user);
             reset();
           })
         .catch((error) => {

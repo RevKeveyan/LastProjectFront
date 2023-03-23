@@ -8,29 +8,6 @@ import axios from "axios";
 import { Profile } from "./components/profile/profile";
 function App() {
 
-    useEffect(()=>{
-        getUser();
-    },[]);
-
-  
-    // const {user, setUser} = useGlobalContext();
-
-  const getUser = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: { Authentication: token }
-      };
-      const response = await axios.get('http://localhost:3001/me', config);
-      console.log(response.data);
-      // setUser(response.data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-
   return (
     <AuthProvider>
         <ChakraProvider>
