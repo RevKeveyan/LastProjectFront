@@ -24,11 +24,11 @@ import {
 
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useEffect } from "react";
 import { useAuth } from "../../authContext/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const Profile = () =>{
-
+    const navigate = useNavigate();
     const {user, updateUser} = useAuth();
     const { register,
         handleSubmit, 
@@ -63,30 +63,14 @@ export const Profile = () =>{
         });
     };
 
-    
-
-  
-
-//   const getUser = async () => {
-//     try {
-//       const token = localStorage.getItem('token');
-//       const config = {
-//         headers: { Authentication: token }
-//       };
-//       const response = await axios.get('http://localhost:3001/me', config);
-//       setUser(response.data);
-//       return response.data;
-//     } catch (error) {
-//       throw error;
-//     }
-//   };
-
-
 
     const userUpdate = async (data) => {
         if(data.firstName !== user.firstName || data.lastName !== user.lastName || +data.age !== user.age){
-            console.log(data, user);
-        const response = await axios.put("http://localhost:3001/update-user", {...data, email:user.email})
+            const token = localStorage.getItem('token');
+            const config = {
+                        headers: { Authentication: token }
+                      };
+        const response = await axios.put("http://localhost:3001/update-user", {...data, email:user.email}, config)
           .then((response) => {
             console.log(response);
             localStorage.setItem('token', response.data.token);
@@ -103,11 +87,15 @@ export const Profile = () =>{
         }
       };
     
-    //   useEffect(() => {
-    //     setValue("firstName", user?.firstName || "");
-    //     setValue("lastName", user?.lastName || "");
-    //     setValue("age", user?.age || "");
-    //   }, [user]);
+          
+      const logOut = () =>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        const request = axios.get("http://localhost:3001/logout");
+        navigate('/sign_in');
+        
+    }
 
     return (
     <>
@@ -181,9 +169,11 @@ export const Profile = () =>{
     </form>
     <Center mt={5}> 
     <PasswordChangeModal user={user} successToast={successToast} errorToast={errorToast}/>
+    <Button borderColor="#08BDA9" bg="#08BDA9" px={10} py={5} onClick={logOut}>Log out</Button>
     </Center> 
     </GridItem>
     </Grid>
+
     </Container>
     </>
     )
@@ -213,8 +203,7 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
               errorToast();
             });
             }
-          
-        
+  
 
 
 
