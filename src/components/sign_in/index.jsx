@@ -24,10 +24,10 @@ export const Login = () => {
             isClosable: true,
         });
     };
-    const errorToast =()=>{
+    const errorToast = (massage)=>{
         return toast({
             title: 'Sorry.',
-            description: "Email or password is incorrect",
+            description: massage,
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -50,8 +50,7 @@ export const Login = () => {
                 reset();
               })
             .catch((error) =>{
-                console.log(error);
-                errorToast();
+                errorToast(error.response.data.message);
             });
         };
         

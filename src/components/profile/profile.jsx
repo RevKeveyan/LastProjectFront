@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useAuth } from "../../authContext/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export const Profile = () =>{
     const navigate = useNavigate();
@@ -53,10 +54,10 @@ export const Profile = () =>{
                 isClosable: true,
             });
         };
-    const errorToast =()=>{
+    const errorToast =(message)=>{
         return toast({
             title: 'Sorry.',
-            description: "Change somthing",
+            description: message,
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -79,8 +80,7 @@ export const Profile = () =>{
             reset();
           })
         .catch((error) => {
-          console.error(error);
-          errorToast();
+          errorToast(error.response.data.message);
         });
         }else{
             errorToast();
@@ -189,21 +189,43 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
         } = useForm({
             mode: "onBlur"
         });
+    const [validCode, setValidCode] = useState(false);
 
-        const changePassword = async (data) => {
+    
+
+    const changePassword = async (data) => {
+        setValidCode(true);
+        if(validCode){
             const response = await axios.put("http://localhost:3001/change-user-password", {...data, email:user.email})
-              .then((response) => {
-                console.log(response);
-                localStorage.setItem('token', response.data);
-                successToast();
-                reset();
-              })
-            .catch((error) => {
-              console.error(error);
-              errorToast();
+            .then((response) => {
+            console.log(response);
+            localStorage.setItem('token', response.data);
+            successToast();
+            reset();
+            setValidCode(false);
+            })
+        .catch((error) => {
+            console.error(error);
+            errorToast(error.response.data.message);
             });
-            }
-  
+            
+        }else{
+            const response = await axios.put("http://localhost:3001/send-verify-code", {...data, email:user.email})
+            .then((response) => {
+            console.log(response);
+            successToast();
+            reset();
+            setValidCode(true);
+            })
+        .catch((error) => {
+            console.error(error);
+            errorToast(error.response.data.message);
+            });
+            
+
+        }
+    }
+
 
 
 
@@ -255,6 +277,23 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
                     validate: (value) => value === watch('password') })} 
             /><br></br>
             <Text color="tomato">{ errors?.confirmPassword && "Passwords do not match"}</Text><br></br> 
+            <FormLabel >Confirm Password</FormLabel>
+            { validCode ?
+            <><Input placeholder="Verify Code" 
+                    w="100%" 
+                    p={8} 
+                    type="number" {
+                ...register('verifyCode',
+                {
+                    required: "Verify code is required",
+                    minLength:{
+                            value: 4,
+                            message: "Verify code is not valid"
+                        }
+                    })} 
+            /><br></br>
+            <Text color="tomato">{ errors?.confirmPassword && "Passwords do not match"}</Text><br></br></> : null }
+            
             <ModalFooter>
                 <Button colorScheme='red' mr={3} onClick={onClose}>
                     Close
@@ -270,3 +309,55 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
         </>
     )
 }
+
+
+// const VerifyCode = () =>{
+//     const { isOpen, onOpen, onClose } = useDisclosure();
+//     const { register,
+//         handleSubmit, 
+//         watch, 
+//         reset, 
+//         formState: { errors },
+//         } = useForm({
+//             mode: "onBlur"
+//         });
+
+//     return(
+//         <>
+//         <Button colorScheme='green' onClick={onOpen}>Save changes</Button>
+//         <Modal isOpen={isOpen} onClose={onClose}>
+//         <ModalOverlay />
+//         <ModalContent>
+//         <ModalHeader>Modal Title</ModalHeader>
+//         <ModalCloseButton />
+//         <ModalBody>
+//         <form>
+//         <FormControl>
+//         <FormLabel >Old Password</FormLabel>
+//             <Input placeholder="verifyCode"
+//                     type="number"
+//                     w="100%" 
+//                     p={8} 
+//                     {...register("verifyCode", 
+//             {   
+//                 required: "Code is required",
+//                 minLength: {
+//                             value: 4,
+//                             message: "Verify code is not valid"
+//                         }
+//             })} /><br></br>
+//             <ModalFooter>
+//                 <Button colorScheme='red' mr={3} onClick={onClose}>
+//                     Close
+//                 </Button>
+//                 <Button colorScheme='green' type="submit">Save changes</Button>
+//             </ModalFooter>
+//         </FormControl>
+//         </form>
+//         </ModalBody>
+           
+//         </ModalContent>
+//         </Modal>
+//         </>
+//     );
+// }

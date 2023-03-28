@@ -9,14 +9,13 @@ import { Verify } from "./components/verify";
 function App() {
 
   const {user, updateUser} = useAuth();
-  console.log(user);
   return (
         <ChakraProvider>
           <Menu/>
           <Routes> 
             <Route path="/sign_in" element={<Login/>}/> 
             <Route path="/sign_up" element={<Form/>}/> 
-            <Route path="/verify/:email" element={<Verify/>}/> 
+            <Route path="/verify/:data" element={<Verify/>}/> 
             {JSON.stringify(user) !== '{}' ? <><Route path="/*" element={<Profile/>}/> 
             <Route path="/profile" element={<Profile/>}/></> : <Route path="/*" element={<Login/>}/>}
           </Routes>

@@ -49,7 +49,7 @@ const onSignUp = async (data) => {
 
 await axios.post("http://localhost:3001/sign_up", 
         {
-            ...data, isVerified:false
+            ...data
         })
         .then(function (response) {
             console.log(response);
