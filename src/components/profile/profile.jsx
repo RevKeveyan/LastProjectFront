@@ -194,15 +194,14 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
     
 
     const changePassword = async (data) => {
-        setValidCode(true);
         if(validCode){
+            setValidCode(false);
             const response = await axios.put("http://localhost:3001/change-user-password", {...data, email:user.email})
             .then((response) => {
             console.log(response);
             localStorage.setItem('token', response.data);
             successToast();
             reset();
-            setValidCode(false);
             })
         .catch((error) => {
             console.error(error);
@@ -210,20 +209,23 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
             });
             
         }else{
+            setValidCode(true);
             const response = await axios.put("http://localhost:3001/send-verify-code", {...data, email:user.email})
             .then((response) => {
             console.log(response);
             successToast();
             reset();
-            setValidCode(true);
-            })
-        .catch((error) => {
+
+        })
+        .catch((error) => { 
             console.error(error);
             errorToast(error.response.data.message);
-            });
+            setValidCode(false);
+        });
             
 
         }
+
     }
 
 
@@ -295,7 +297,10 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
             <Text color="tomato">{ errors?.confirmPassword && "Passwords do not match"}</Text><br></br></> : null }
             
             <ModalFooter>
-                <Button colorScheme='red' mr={3} onClick={onClose}>
+                <Button colorScheme='red' mr={3} onClick={()=>{
+                    onClose();
+                    setValidCode(false);
+                    }}>
                     Close
                 </Button>
                 <Button colorScheme='green' type="submit">Save changes</Button>
