@@ -20,6 +20,7 @@ import {
     List,
     ButtonGroup,
     Center,
+    Heading,
 } from "@chakra-ui/react";
 
 import { useForm } from "react-hook-form";
@@ -28,7 +29,7 @@ import { useAuth } from "../../authContext/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export const Profile = () =>{
+export const ProfileUpdate = () =>{
     const navigate = useNavigate();
     const {user, updateUser} = useAuth();
     const { register,
@@ -169,11 +170,12 @@ export const Profile = () =>{
     </form>
     <Center mt={5}> 
     <PasswordChangeModal user={user} successToast={successToast} errorToast={errorToast}/>
-    <Button borderColor="#08BDA9" bg="#08BDA9" px={10} py={5} onClick={logOut}>Log out</Button>
+    <Button ml={10} borderColor="#08BDA9" bg="#08BDA9" px={10} py={5} onClick={logOut}>Log out</Button>
     </Center> 
     </GridItem>
     </Grid>
-
+            
+           
     </Container>
     </>
     )
@@ -196,12 +198,17 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
     const changePassword = async (data) => {
         if(validCode){
             setValidCode(false);
-            const response = await axios.put("http://localhost:3001/change-user-password", {...data, email:user.email})
+            const token = localStorage.getItem('token');
+            const config = {
+                        headers: { Authentication: token }
+                      };
+            const response = await axios.put("http://localhost:3001/change-user-password", {...data, email:user.email},config)
             .then((response) => {
             console.log(response);
             localStorage.setItem('token', response.data);
             successToast();
             reset();
+            onClose();
             })
         .catch((error) => {
             console.error(error);
@@ -210,7 +217,11 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
             
         }else{
             setValidCode(true);
-            const response = await axios.put("http://localhost:3001/send-verify-code", {...data, email:user.email})
+            const token = localStorage.getItem('token');
+            const config = {
+                        headers: { Authentication: token }
+                      };
+            const response = await axios.put("http://localhost:3001/send-verify-code", {...data, email:user.email},config)
             .then((response) => {
             console.log(response);
             successToast();
@@ -291,10 +302,14 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
                     minLength:{
                             value: 4,
                             message: "Verify code is not valid"
-                        }
+                        },
+                    maxLength:{
+                        value: 4,
+                        message: "Verify code is not valid"
+                    }
                     })} 
             /><br></br>
-            <Text color="tomato">{ errors?.confirmPassword && "Passwords do not match"}</Text><br></br></> : null }
+            <Text color="tomato">{ errors?.verifyCode && "Code do not match"}</Text><br></br></> : null }
             
             <ModalFooter>
                 <Button colorScheme='red' mr={3} onClick={()=>{
@@ -315,54 +330,3 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
     )
 }
 
-
-// const VerifyCode = () =>{
-//     const { isOpen, onOpen, onClose } = useDisclosure();
-//     const { register,
-//         handleSubmit, 
-//         watch, 
-//         reset, 
-//         formState: { errors },
-//         } = useForm({
-//             mode: "onBlur"
-//         });
-
-//     return(
-//         <>
-//         <Button colorScheme='green' onClick={onOpen}>Save changes</Button>
-//         <Modal isOpen={isOpen} onClose={onClose}>
-//         <ModalOverlay />
-//         <ModalContent>
-//         <ModalHeader>Modal Title</ModalHeader>
-//         <ModalCloseButton />
-//         <ModalBody>
-//         <form>
-//         <FormControl>
-//         <FormLabel >Old Password</FormLabel>
-//             <Input placeholder="verifyCode"
-//                     type="number"
-//                     w="100%" 
-//                     p={8} 
-//                     {...register("verifyCode", 
-//             {   
-//                 required: "Code is required",
-//                 minLength: {
-//                             value: 4,
-//                             message: "Verify code is not valid"
-//                         }
-//             })} /><br></br>
-//             <ModalFooter>
-//                 <Button colorScheme='red' mr={3} onClick={onClose}>
-//                     Close
-//                 </Button>
-//                 <Button colorScheme='green' type="submit">Save changes</Button>
-//             </ModalFooter>
-//         </FormControl>
-//         </form>
-//         </ModalBody>
-           
-//         </ModalContent>
-//         </Modal>
-//         </>
-//     );
-// }

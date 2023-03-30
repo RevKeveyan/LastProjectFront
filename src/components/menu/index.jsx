@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export const Menu = () =>{
     return (
-        <Container centerContent>
-                <Grid templateColumns='repeat(3, 1fr)' gap={10}>
+        <Container centerContent mt={10}>
+                <Grid templateColumns='repeat(4, auto)' gap={10}>
                     <GridItem>
                         <Text>
                             <Link to="/sign_up">
@@ -16,6 +16,13 @@ export const Menu = () =>{
                         <Text>
                             <Link to="/sign_in">
                                 SING IN
+                            </Link>
+                        </Text>
+                    </GridItem>
+                    <GridItem>
+                        <Text>
+                            <Link to="/profile-update">
+                                UPDATE PROFILE
                             </Link>
                         </Text>
                     </GridItem>

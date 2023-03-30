@@ -48,26 +48,14 @@ export const Login = () => {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 successToast();
                 reset();
+                navigate('/profile');
               })
             .catch((error) =>{
                 errorToast(error.response.data.message);
             });
         };
         
-        // const getUser = async () => {
-        //     try {
-        //       const token = localStorage.getItem('token');
-        //       const config = {
-        //         headers: { Authentication: token }
-        //       };
-        //       const response = await axios.get('http://localhost:3001/me', config);
-        //       console.log(response.data);
-        //       return response.data;
-        //     } catch (error) {
-        //       throw error;
-        //     }
-        //   };
-       
+      
     return (
     <Container  maxW="2xl" centerContent>
         <Text fontSize='6xl'>SIGN IN</Text>
@@ -100,7 +88,7 @@ export const Login = () => {
                 <Center> 
                     <ButtonGroup >
                         <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} type="submit">LOGIN</Button>
-                        <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} ><Link to="/sign_up">SIGN UP</Link></Button>
+                        <Link to="/sign_up"> <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} >SIGN UP</Button></Link>
                     </ButtonGroup>
                 </Center>
 

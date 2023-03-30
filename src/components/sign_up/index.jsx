@@ -156,7 +156,7 @@ await axios.post("http://localhost:3001/sign_up",
                
                     <Center> 
                     <ButtonGroup>
-                        <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} ><Link to="/sign_in">LOGIN</Link></Button>
+                    <Link to="/sign_in"><Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} >LOGIN</Button></Link>
                         <Button borderColor="#08BDA9" bg="#08BDA9" px={20} py={5} type="submit">SIGN UP</Button>
                     </ButtonGroup>
                     </Center>

@@ -3,9 +3,10 @@ import {Routes,Route} from "react-router-dom";
 import { Form } from "./components/sign_up";
 import { ChakraProvider } from "@chakra-ui/react";
 import { useAuth } from "./authContext/AuthContext";
-import { Profile } from "./components/profile/profile";
+import { ProfileUpdate } from "./components/profileUpdate/profileUpdate";
 import { Menu } from "./components/menu";
 import { Verify } from "./components/verify";
+import { Profile } from "./components/profile";
 function App() {
 
   const {user, updateUser} = useAuth();
@@ -16,8 +17,11 @@ function App() {
             <Route path="/sign_in" element={<Login/>}/> 
             <Route path="/sign_up" element={<Form/>}/> 
             <Route path="/verify/:data" element={<Verify/>}/> 
-            {JSON.stringify(user) !== '{}' ? <><Route path="/*" element={<Profile/>}/> 
-            <Route path="/profile" element={<Profile/>}/></> : <Route path="/*" element={<Login/>}/>}
+            {JSON.stringify(user) !== '{}' ? <>
+            <Route path="/*" element={<Profile/>}/> 
+            <Route path="/profile-update" element={<ProfileUpdate/>}/>
+            </> : 
+            <Route path="/*" element={<Login/>}/>}
           </Routes>
         </ChakraProvider>
   );
