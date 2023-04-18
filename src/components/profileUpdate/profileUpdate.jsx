@@ -216,11 +216,12 @@ const PasswordChangeModal = ({user, successToast, errorToast})=>{
             });
             
         }else{
-            setValidCode(true);
+            
             const token = localStorage.getItem('token');
             const config = {
                         headers: { Authentication: token }
                       };
+            setValidCode(true);
             const response = await axios.put("http://localhost:3001/send-verify-code", {...data, email:user.email},config)
             .then((response) => {
             console.log(response);

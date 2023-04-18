@@ -1,15 +1,17 @@
 import { Button,Flex,Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
-import { usePost } from "../../../../postContext/postContext";
 
-export const DeletePostModal = ({id})=>{
+export const DeletePostModal = ({posts, setPosts, id})=>{
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {posts, setPosts} = usePost();
     const deletePost = async () => {
         const token = localStorage.getItem('token');
+        const Post = JSON.parse(localStorage.getItem('Post'));
+        const {imageUrl} = Post;
+        console.log(imageUrl);
         const config = {
                     headers: { Authentication: token,
-                                id}
+                                id,
+                            imageUrl}
                     };
         const response = await axios.delete("http://localhost:3001/user/delete-post",config)
                     .then((response)=>{

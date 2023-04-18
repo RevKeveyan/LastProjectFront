@@ -1,10 +1,10 @@
 import { Container, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-
-export const Menu = () =>{
+import {GrNotification} from "react-icons/gr";
+export const Menu = ({messages}) =>{
     return (
-        <Container centerContent mt={10}>
-                <Grid templateColumns='repeat(4, auto)' gap={10}>
+        <Container centerContent mt={10} mb={20}>
+                <Grid templateColumns='repeat(7, auto)' gap={10}>
                     <GridItem>
                         <Text>
                             <Link to="/sign_up">
@@ -21,6 +21,14 @@ export const Menu = () =>{
                     </GridItem>
                     <GridItem>
                         <Text>
+                            <Link to="/messenger">
+                                Messenger
+                                <GrNotification/> {messages}
+                            </Link>
+                        </Text>
+                    </GridItem>
+                    <GridItem>
+                        <Text>
                             <Link to="/profile-update">
                                 UPDATE PROFILE
                             </Link>
@@ -30,6 +38,13 @@ export const Menu = () =>{
                         <Text>
                             <Link to="/profile">
                                 PROFILE
+                            </Link>
+                        </Text>
+                    </GridItem>
+                    <GridItem>
+                        <Text>
+                            <Link to="/feeds">
+                               FEEDS
                             </Link>
                         </Text>
                     </GridItem>

@@ -16,9 +16,9 @@ const AuthProvider = ({children}) =>{
         axios.get('http://localhost:3001/me',{
                 headers: { Authentication: localStorage.getItem("token") }
         }).then((res)=>{
-            console.log(res.data);
+            // console.log(res.data);
         }).catch((error)=>{
-            console.log(error);
+            // console.log(error);
         });
     },[])
     const updateUser = (user) => {

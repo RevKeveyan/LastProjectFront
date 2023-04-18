@@ -76,7 +76,7 @@ export const Login = () => {
 
 
             <FormLabel >Password</FormLabel>
-            <Input placeholder="password" p={8} {...register("password", 
+            <Input placeholder="password" type="password" p={8} {...register("password", 
             {   
                 required: "Password is incorrect",
                 minLength:{
